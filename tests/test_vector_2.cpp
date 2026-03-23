@@ -102,4 +102,60 @@ TEST_CASE("Empty vector has begin() equal to end()") {
     REQUIRE(v.begin() == v.end());
 }
 
+TEST_CASE("Const iterator begin iterator references first element") {
+    Vector<int> v;
+    v.push_back(10);
+    v.push_back(20);
+    v.push_back(30);
+    v.push_back(40);
+
+    const Vector<int>& cv = v;
+
+    auto it = cv.begin();
+    REQUIRE(*it == 10);
+}
+
+TEST_CASE("Const iterator prefix and Postfix iterators work correctly") {
+    Vector<int> v;
+    v.push_back(5);
+    v.push_back(10);
+    v.push_back(15);
+
+    const Vector<int>& cv = v;
+
+    auto it = cv.begin();
+    REQUIRE(*it == 5);
+    
+    auto old = it++;  // Assign current val then increment
+    REQUIRE(*old == 5);
+    REQUIRE(*it == 10);
+
+    ++it;   // increment then assign
+    REQUIRE(*it == 15); 
+
+    auto old2 = it--;
+    REQUIRE(*old2 == 15);
+    REQUIRE(*it == 10);
+}
+
+TEST_CASE("Const iterator equality and inequality iterators work correctly") {
+    Vector<int> v;
+    v.push_back(5);
+    v.push_back(10);
+    v.push_back(15);
+
+    const Vector<int>& cv = v;
+
+    auto it1 = cv.begin();
+    auto it2 = cv.begin();
+    auto it3 = cv.end();
+
+    REQUIRE(it1 == it2); // Checks Equality
+    REQUIRE(it1 != it3); // Checks Inequality
+}
+
+TEST_CASE("Const iterator empty vector has begin() equal to end()") {
+    const Vector<int> cv;
+    REQUIRE(cv.begin() == cv.end());
+}
 
