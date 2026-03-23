@@ -142,19 +142,51 @@ class Vector {
             cap = minimum; //update capacity with new amt of memory allocated in updated data array
         }
 
-        Vector(const Vector& other);
+        // Rule of Five Implementation
 
-        Vector& operator=(const Vector& other);
+        Vector(const Vector& other) : cap(0), sz(0), data(nullptr) {   // Copy Constructor
+            clone(other); 
+        }
 
-        Vector(Vector&& other);
-        Vector& operator=(Vector&& other);
+        Vector& operator=(const Vector& other) { // Copy Assignment
+            if (this != &other) {
+                delete[] data;
+                clone(other);
+            }
+            return *this;
+        }
+
+        Vector(Vector&& other) : cap(0), sz(0), data(nullptr) { // Move Constructor
+            transfer(other);
+        }
+
+        Vector& operator=(Vector&& other) {
+            if (this != &other) {
+                delete[] data;
+                transfer(other);
+            }
+            return *this;
+        }
 
         ~Vector() { delete[] data; }
     
     private:
-        void clone(const Vector& other);
+        void clone(const Vector& other) {
+            cap = other.cap;
+            sz = other.sz;
+            data = new T[cap];
+            for (int k = 0; k < sz; k++) {
+                data[k] = other.data[k];
+            }
+        }
 
-        void transfer(Vector& other);
+        void transfer(Vector& other) {
+            cap = other.cap;
+            sz = other.sz;
+            data = other.data;
+            other.cap = other.sz = 0;
+            other.data = nullptr;
+        }
 
     public:
         class iterator {
