@@ -190,21 +190,43 @@ class Vector {
 
     public:
         class iterator {
-            friend class Vector;
+            friend class Vector; // for Vector insert & erase
             private:
-                Vector* vec;
+                Vector* vec;    // maintains a connection to the specific container instacne that created the iterator
                 int ind;        // index within the vector
             
             public:
-                iterator(Vector* v = nullptr, int i = -1);
-                T& operator*() const;
-                T* operator->() const;
-                iterator& operator++();
-                iterator operator++(int);
-                iterator& operator--();
-                iterator operator--(int);
-                bool operator==(iterator rhs) const;
-                bool operator!=(iterator rhs) const;
+                iterator(Vector* v = nullptr, int i = -1) : vec{v}, ind{i} {}
+                T& operator*() const {
+                    return (*vec)[ind]; // returns a reference to the element at position ind be dereferencing the container pointer and indexing it
+                }
+                T* operator->() const {
+                    return &(*vec)[ind]; // returns the address of the current element so that built-in -> can access member variables or functions
+                }
+                iterator& operator++() { // prefix increment ++it
+                    ++ind;
+                    return *this; // advances iterator and returns reference to updated object
+                }
+                iterator operator++(int) { // postfix increment it++
+                    iterator old(*this);
+                    ++ind;
+                    return old; // returns old iterator value, then advances
+                }
+                iterator& operator--() { // prefix decrement --it
+                    --ind; 
+                    return *this; // moves iterator backward and returns reference
+                }
+                iterator operator--(int) { // postfix decrement it--
+                    iterator old(*this);
+                    --ind;
+                    return old; // returns old iterator value, then moves backward
+                }
+                bool operator==(iterator rhs) const {
+                    return vec == rhs.vec && ind == rhs.ind; // iterators are equal if they refer to the same container and the same position within that container
+                }
+                bool operator!=(iterator rhs) const {
+                    return !(*this == rhs); // Inequality defined in terms of equality to avoid duplication
+                }
         };
 
         class const_iterator {
@@ -213,25 +235,61 @@ class Vector {
                 int ind;                   // index within the vector
             
             public:
-                const_iterator(const Vector* v = nullptr, int i = -1);
-                const T& operator*() const;
-                const T* operator->() const;
-                const_iterator& operator++();
-                const_iterator operator++(int);
-                const_iterator& operator--();
-                const_iterator operator--(int);
-                bool operator==(const_iterator rhs) const;
-                bool operator!=(const_iterator rhs) const;
+                const_iterator(const Vector* v = nullptr, int i = -1) : vec{v}, ind{i} {}
+                const T& operator*() const {
+                    return (*vec)[ind];
+                }
+                const T* operator->() const {
+                    return &(*vec)[ind];
+                }
+                const_iterator& operator++() {
+                    ++ind;
+                    return *this;
+                }
+                const_iterator operator++(int) {
+                    const_iterator old(*this);
+                    ++ind;
+                    return old;
+                }
+                const_iterator& operator--() {
+                    --ind; 
+                    return *this; 
+                }
+                const_iterator operator--(int) {
+                    const_iterator old(*this);
+                    --ind;
+                    return old;
+                }
+                bool operator==(const_iterator rhs) const {
+                    return vec == rhs.vec && ind == rhs.ind;
+                }
+                bool operator!=(const_iterator rhs) const {
+                    return !(*this == rhs);
+                }
         };
 
-        iterator begin();
-        iterator end();
-        const_iterator begin() const;
-        const_iterator end() const;
+        iterator begin() {
+            return iterator(this, 0);
+        }
+        iterator end() {
+            return iterator(this, sz);
+        }
+        const_iterator begin() const {
+            return const_iterator(this, 0);
+        }
+        const_iterator end() const {
+            return const_iterator(this, sz);
+        }
 
-        iterator insert(iterator it, const T& elem);
+        iterator insert(iterator it, const T& elem) {
+            insert(it.ind, elem); // calls the index-based version
+            return it; // new element was placed at the given index
+        }
 
-        iterator erase(iterator it);
+        iterator erase(iterator it) {
+            erase(it.ind); // erases the element at the iterator position
+            return it; // element after removed has been shifted one position to the left
+        }
 
         // called by other functions to reduce cap by half 
         // when sz <= cap/4 
