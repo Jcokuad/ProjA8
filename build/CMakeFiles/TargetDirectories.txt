@@ -1,5 +1,0 @@
-C:/Users/JOkua/ProjA8/build/CMakeFiles/dsac.dir
-C:/Users/JOkua/ProjA8/build/CMakeFiles/my_test.dir
-C:/Users/JOkua/ProjA8/build/CMakeFiles/RUN_TESTS.dir
-C:/Users/JOkua/ProjA8/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/JOkua/ProjA8/build/CMakeFiles/ZERO_CHECK.dir
